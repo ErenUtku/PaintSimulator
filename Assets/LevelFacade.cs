@@ -8,6 +8,10 @@ public class LevelFacade : MonoBehaviour
 
     [SerializeField] private GameObject levelEndObject;
 
+    public DetectorMovement detectorObject;
+    public CheckpointContainer checkpointContainer;
+
+    public bool isTraveledDone;
     public static LevelFacade Instance;
     private void Awake()
     {
@@ -21,12 +25,12 @@ public class LevelFacade : MonoBehaviour
 
     public float LevelCompleteThreshold()
     {
-        return pixelOnBoard;
+        return pixelOnBoard *1000;
     }
 
     public void CheckLevelComplete(Texture2D texture)
     {
-        if(CalculatePixelSize(texture)>= pixelOnBoard)
+        if(CalculatePixelSize(texture)>= LevelCompleteThreshold() && CheckpointTracker(out isTraveledDone))
         {
             levelEndObject.SetActive(true);
             Debug.Log("Level Completed");
@@ -64,5 +68,22 @@ public class LevelFacade : MonoBehaviour
     public void RestartLevel()
     {
         Application.LoadLevel(Application.loadedLevel);
+    }
+
+    public DetectorMovement DetectorObject()
+    {
+        return detectorObject;
+    }
+
+    private bool CheckpointTracker(out bool isTraveledDone)
+    {
+        foreach (var checkpoint in checkpointContainer.checkPointList)
+        {
+            if (checkpoint.isTouched == false)
+            {
+                return isTraveledDone = false;
+            }
+        }
+        return isTraveledDone = true;
     }
 }
