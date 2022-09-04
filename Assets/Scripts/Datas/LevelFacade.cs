@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class LevelFacade : MonoBehaviour
 {
+    [SerializeField] private GameObject armGameObject;
+
     [SerializeField] private float pixelOnBoard;
 
     [SerializeField] private GameObject levelEndObject;
 
     public DetectorMovement detectorObject;
     public CheckpointContainer checkpointContainer;
+    
 
-    public bool isTraveledDone;
+    private bool isTraveledDone;
+
     public static LevelFacade Instance;
     private void Awake()
     {
@@ -21,6 +26,7 @@ public class LevelFacade : MonoBehaviour
     private void Start()
     {
         levelEndObject.SetActive(false);
+        GameStart();
     }
 
     public float LevelCompleteThreshold()
@@ -85,5 +91,15 @@ public class LevelFacade : MonoBehaviour
             }
         }
         return isTraveledDone = true;
+    }
+
+    private void GameStart()
+    {
+        detectorObject.gameObject.SetActive(false);
+
+        armGameObject.transform.DOMoveX(0, 3f).OnComplete(() =>
+        {
+            detectorObject.gameObject.SetActive(true);
+        });
     }
 }

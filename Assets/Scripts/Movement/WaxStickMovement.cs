@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class WaxStickMovement : MonoBehaviour
 {
-    [SerializeField] private GameObject waxObject;
+    [SerializeField] private GameObject playerObject;
+    [SerializeField] private GameObject waxModel;
     private Camera _mainCamera;
-
+    private Sequence mySequence;
     //Layer Masking
     private int mask = 1;
 
@@ -25,9 +27,22 @@ public class WaxStickMovement : MonoBehaviour
         {
             if (raycastHit.collider.gameObject.layer == LayerMask.NameToLayer("Occlude"))
             {
-                //waxObject.transform.position = raycastHit.point;
-                waxObject.transform.position = new Vector3(raycastHit.point.x - 1, 2, raycastHit.point.z - 1);
+                //playerObject.transform.position = raycastHit.point;
+                playerObject.transform.position = new Vector3(raycastHit.point.x - 1, this.transform.position.y, raycastHit.point.z - 1);
             }
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            mySequence.Kill();
+            mySequence.Append(waxModel.transform.DOMoveY(2, 1f));
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            mySequence.Kill();
+            mySequence.Append(waxModel.transform.DOMoveY(3, 1f));
+        }
+
     }
 }

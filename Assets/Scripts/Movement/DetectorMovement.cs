@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class DetectorMovement : MonoBehaviour
 {
-    [SerializeField] private GameObject waxObject;
-
     public bool isActive;
 
     void Start()
@@ -15,8 +13,6 @@ public class DetectorMovement : MonoBehaviour
 
     void Update()
     {
-        transform.position = new Vector3(waxObject.transform.position.x, -2, waxObject.transform.position.z);
-
         //Checking Box Collider
         if (Input.GetMouseButtonDown(0))
         {
