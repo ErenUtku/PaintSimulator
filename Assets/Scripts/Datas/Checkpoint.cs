@@ -23,8 +23,9 @@ public class Checkpoint : MonoBehaviour
         checkpointContainer.checkPointList.Add(this);
     }
 
-    #region TRIGGER AND COLLISIONS
-    private void OnTriggerStay(Collider other)
+    #region PRIVATE FIELDS
+
+    private void CheckObjectTouched(Collider other)
     {
         if (other.gameObject.tag == "WaxObject" && detectorObject.isActive)
         {
@@ -32,6 +33,26 @@ public class Checkpoint : MonoBehaviour
             _boxCollider.enabled = false;
         }
     }
+
     #endregion
 
+    #region TRIGGER AND COLLISIONS
+    private void OnTriggerStay(Collider other)
+    {
+        CheckObjectTouched(other);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        CheckObjectTouched(other);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        CheckObjectTouched(other);
+    }
+    #endregion
+
+
+   
 }

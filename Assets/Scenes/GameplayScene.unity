@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playfieldObject: {fileID: 212762812}
-  pixelOnBoard: 200
+  pixelOnBoard: 190
   paintableArea: {fileID: 1975179843}
   detectorObject: {fileID: 8365792486166223949}
   checkpointContainer: {fileID: 1324246882}
@@ -3363,22 +3363,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1324246881}
     m_Modifications:
-    - target: {fileID: 1105380378063357972, guid: ea81751429a68d34ab43e369113660e2, type: 3}
-      propertyPath: m_Size.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1105380378063357972, guid: ea81751429a68d34ab43e369113660e2, type: 3}
-      propertyPath: m_Size.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1105380378063357972, guid: ea81751429a68d34ab43e369113660e2, type: 3}
-      propertyPath: m_Size.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1252201856394252447, guid: ea81751429a68d34ab43e369113660e2, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1840300043051469847, guid: ea81751429a68d34ab43e369113660e2, type: 3}
       propertyPath: m_Name
       value: Checkpoint
