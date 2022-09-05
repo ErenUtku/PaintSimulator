@@ -7,21 +7,28 @@ public class PaintObject : MonoBehaviour
     [SerializeField] private MeshRenderer paintableObject;
     [SerializeField] private Texture2D brush;
     [SerializeField] private Vector2Int textureArea;
+    [SerializeField] private ParticleSystem particleEffect;
+
+    [Header("Brush Stroke Apply Settings")]
+    [SerializeField] private bool applyImmidiate;
+    [SerializeField] private float delayTimeToApply;
+
+
+    ParticleSystem.EmissionModule oThrusterEmission;
     private Texture2D _texture;
 
-    private void Awake()
-    {
-
-    }
+    public bool isPainting;
 
     void Start()
     {
+        oThrusterEmission = particleEffect.emission;
         _texture = new Texture2D(textureArea.x, textureArea.y, TextureFormat.ARGB32, false);
-        paintableObject.material.mainTexture = _texture;       
+        paintableObject.material.mainTexture = _texture;
     }
     
     void Update()
     {
+
         if (Input.GetMouseButton(0))
         {
             RaycastHit hitInfo;
@@ -34,7 +41,20 @@ public class PaintObject : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+            isPainting = false;
             LevelFacade.Instance.CheckLevelComplete(_texture);
+
+            CancelInvoke();
+            Invoke(nameof(ApplyTexture), delayTimeToApply);
+        }
+
+        if (isPainting == false)
+        {
+            oThrusterEmission.enabled=false;
+        }
+        else
+        {
+            oThrusterEmission.enabled = true;
         }
     }
 
@@ -51,13 +71,13 @@ public class PaintObject : MonoBehaviour
         for (int x = 0; x < brush.width; x++)
         {
             int xPos = x - halfBrush.x + (int)cordinates.x;
-            if (xPos < 0 || xPos >= _texture.width)
+            if (xPos <= 0 || xPos >= _texture.width)
                 continue;
 
             for (int y = 0; y < brush.height; y++)
             {
                 int yPos = y - halfBrush.y + (int)cordinates.y;
-                if (yPos < 0 || yPos >= _texture.height)
+                if (yPos <= 0 || yPos >= _texture.height)
                     continue;
 
                 if (brushC32[x+ (y*brush.width)].a > 0f)
@@ -70,8 +90,20 @@ public class PaintObject : MonoBehaviour
                 }                
             }
         }
+
+        //DelayPainting
+
         _texture.SetPixels32(textureC32);
-        _texture.Apply();      
+        if (isPainting == false)
+        {
+            InvokeRepeating(nameof(ApplyTexture), delayTimeToApply, delayTimeToApply);
+        }
+        if (applyImmidiate == true)
+        {
+            _texture.Apply();
+        }
+        isPainting = true;
+
         //Debug.Log(CalculateFill(textureC32, paintableObject.material.color, 0.5f));
     }
 
@@ -89,5 +121,10 @@ public class PaintObject : MonoBehaviour
         return (float)numHits / (float)colors.Length; ;
     }
     
+
+    private void ApplyTexture()
+    {
+        _texture.Apply();
+    }
 
 }

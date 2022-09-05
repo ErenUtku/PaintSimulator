@@ -43,6 +43,7 @@ public class LevelFacade : MonoBehaviour
         {
             levelEndObject.SetActive(true);
             Debug.Log("Level Completed");
+            return;
         }
     }
 
