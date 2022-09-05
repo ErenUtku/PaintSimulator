@@ -1,27 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class HairColliderController : MonoBehaviour
 {
-    private BoxCollider _boxCollider;
+    [SerializeField] private LevelFacade levelFacade;
+    private Sequence mySequence;
+    public Vector3 defaultPos;
+
+
     private void Start()
     {
-        _boxCollider = GetComponent<BoxCollider>();
+        levelFacade.hairFindPosition += FindDefaultPosition;
     }
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.tag == ("WaxObject"))
+        if (other.gameObject.tag == ("WaxObject"))
         {
-            _boxCollider.isTrigger = false;
+            if (mySequence == null)
+            {
+                mySequence.Append(this.transform.DOShakePosition(0.25f,0.3f,2,90)).OnComplete(()=> 
+                {
+                    transform.DOMove(defaultPos, 0.1f);
+                });
+            }
+        }   
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == ("WaxObject"))
+        {
+            transform.DOMove(defaultPos, 0.1f).OnComplete(()=> {
+                mySequence.Kill();
+            });
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void FindDefaultPosition()
     {
-        if (collision.gameObject.tag == ("WaxObject"))
-        {
-            _boxCollider.isTrigger = true;
-        }
+        defaultPos = this.gameObject.transform.position;
     }
+
+
 }

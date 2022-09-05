@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
+using UnityEngine.Events;
 
 public class LevelFacade : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class LevelFacade : MonoBehaviour
 
     public DetectorMovement detectorObject;
     public CheckpointContainer checkpointContainer;
+    public Action hairFindPosition;
     
 
     private bool isTraveledDone;
@@ -100,6 +103,7 @@ public class LevelFacade : MonoBehaviour
         armGameObject.transform.DOMoveX(0, 3f).OnComplete(() =>
         {
             detectorObject.gameObject.SetActive(true);
+            hairFindPosition?.Invoke();
         });
     }
 }

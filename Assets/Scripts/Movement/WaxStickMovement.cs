@@ -35,13 +35,13 @@ public class WaxStickMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             mySequence.Kill();
-            mySequence.Append(waxModel.transform.DOMoveY(2, 1f));
+            mySequence.Append(waxModel.transform.DOMoveY(2, 0.25f));
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             mySequence.Kill();
-            mySequence.Append(waxModel.transform.DOMoveY(3, 1f));
+            mySequence.Append(waxModel.transform.DOMoveY(3, 0.25f));
         }
 
     }

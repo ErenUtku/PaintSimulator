@@ -9,6 +9,11 @@ public class PaintObject : MonoBehaviour
     [SerializeField] private Vector2Int textureArea;
     private Texture2D _texture;
 
+    private void Awake()
+    {
+
+    }
+
     void Start()
     {
         _texture = new Texture2D(textureArea.x, textureArea.y, TextureFormat.ARGB32, false);
