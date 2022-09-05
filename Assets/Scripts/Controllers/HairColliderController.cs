@@ -4,15 +4,17 @@ using UnityEngine;
 using DG.Tweening;
 public class HairColliderController : MonoBehaviour
 {
-    [SerializeField] private LevelFacade levelFacade;
+    private LevelFacade levelFacade;
     private Sequence mySequence;
-    public Vector3 defaultPos;
-
+    private Vector3 defaultPos;
 
     private void Start()
     {
+        levelFacade = LevelFacade.Instance;
         levelFacade.hairFindPosition += FindDefaultPosition;
     }
+
+    #region TRIGGERS AND COLLIDERS
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == ("WaxObject"))
@@ -35,11 +37,15 @@ public class HairColliderController : MonoBehaviour
             });
         }
     }
+    #endregion
+
+    #region EVENTS AND ACTIONS
 
     private void FindDefaultPosition()
     {
         defaultPos = this.gameObject.transform.position;
     }
 
+    #endregion
 
 }

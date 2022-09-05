@@ -48,6 +48,7 @@ public class PaintObject : MonoBehaviour
             Invoke(nameof(ApplyTexture), delayTimeToApply);
         }
 
+        //Particle System Behavior
         if (isPainting == false)
         {
             oThrusterEmission.enabled=false;
@@ -58,35 +59,37 @@ public class PaintObject : MonoBehaviour
         }
     }
 
+    #region PRIVATE ATTRIBUTES
+
     private void Paint(Vector2 cordinates)
     {
         cordinates.x *= _texture.width;
         cordinates.y *= _texture.height;
-        Color32[] textureC32 = _texture.GetPixels32();
-        Color32[] brushC32 = brush.GetPixels32();
-       
-        Vector2Int halfBrush = new Vector2Int(brush.width / 2, brush.height / 2);
 
+        Color32[] textureC32 = _texture.GetPixels32();
+        Color32[] brushC32 = brush.GetPixels32();   
+        
+        Vector2Int halfBrushSize = new Vector2Int(brush.width / 2, brush.height / 2);
 
         for (int x = 0; x < brush.width; x++)
         {
-            int xPos = x - halfBrush.x + (int)cordinates.x;
-            if (xPos <= 0 || xPos >= _texture.width)
+            int PosX = x - halfBrushSize.x + (int)cordinates.x;
+
+            if (PosX <= 0 || PosX >= _texture.width)
                 continue;
 
             for (int y = 0; y < brush.height; y++)
             {
-                int yPos = y - halfBrush.y + (int)cordinates.y;
-                if (yPos <= 0 || yPos >= _texture.height)
+                int PosY = y - halfBrushSize.y + (int)cordinates.y;
+                if (PosY <= 0 || PosY >= _texture.height)
                     continue;
 
                 if (brushC32[x+ (y*brush.width)].a > 0f)
                 {
-                    int tPos = xPos + (_texture.width * yPos);
+                    int totalPos = PosX + (_texture.width * PosY);
 
-                    if (brushC32[x + (y * brush.width)].r < textureC32[tPos].r)
-                        textureC32[tPos] = brushC32[x + (y * brush.width)];
-
+                    if (brushC32[x + (y * brush.width)].r < textureC32[totalPos].r)
+                        textureC32[totalPos] = brushC32[x + (y * brush.width)];
                 }                
             }
         }
@@ -98,15 +101,28 @@ public class PaintObject : MonoBehaviour
         {
             InvokeRepeating(nameof(ApplyTexture), delayTimeToApply, delayTimeToApply);
         }
+
         if (applyImmidiate == true)
         {
             _texture.Apply();
         }
+
         isPainting = true;
 
-        //Debug.Log(CalculateFill(textureC32, paintableObject.material.color, 0.5f));
+        //OBSOLETE
+        //Debug.Log(CalculateFill(textureC32, paintableArea.material.color, 0.5f));
+        //OBSOLETE
     }
 
+    private void ApplyTexture()
+    {
+        _texture.Apply();
+    }
+
+    #endregion
+
+    [System.Obsolete]
+    #region STATIC FIELD
     static float CalculateFill(Color32[] colors, Color reference, float tolerance)
     {
         Vector3 target = new Vector3 { x = reference.r, y = reference.g, z = reference.b };
@@ -120,11 +136,7 @@ public class PaintObject : MonoBehaviour
         }
         return (float)numHits / (float)colors.Length; ;
     }
-    
 
-    private void ApplyTexture()
-    {
-        _texture.Apply();
-    }
+    #endregion
 
 }

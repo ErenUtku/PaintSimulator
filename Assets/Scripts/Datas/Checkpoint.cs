@@ -16,13 +16,15 @@ public class Checkpoint : MonoBehaviour
     }
     private void Start()
     {
-        detectorObject = LevelFacade.Instance.DetectorObject();
-        checkpointContainer = LevelFacade.Instance.checkpointContainer;
+        detectorObject = LevelFacade.Instance.GetDetectorObject();
+        checkpointContainer = LevelFacade.Instance.GetCheckPointContainer();
 
         //Adding Checkpoint to the list
         checkpointContainer.checkPointList.Add(this);
     }
-    private void OnTriggerEnter(Collider other)
+
+    #region TRIGGER AND COLLISIONS
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "WaxObject" && detectorObject.isActive)
         {
@@ -30,4 +32,6 @@ public class Checkpoint : MonoBehaviour
             _boxCollider.enabled = false;
         }
     }
+    #endregion
+
 }

@@ -5,21 +5,24 @@ using DG.Tweening;
 
 public class WaxStickMovement : MonoBehaviour
 {
-    [SerializeField] private GameObject playerObject;
+    [Header("WaxModelOnly(Depend On Level)")]
     [SerializeField] private GameObject waxModel;
+
+    [Header("Components")]
     private Camera _mainCamera;
     private Sequence mySequence;
-    //Layer Masking
+
+    [Header("Layer Order(int)")]
     private int mask = 1;
 
     void Start()
     {
         _mainCamera = Camera.main;
+
         mask = 1 << LayerMask.NameToLayer("Ignore_Occlude");
         mask = 1 << LayerMask.NameToLayer("Occlude");
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -28,7 +31,7 @@ public class WaxStickMovement : MonoBehaviour
             if (raycastHit.collider.gameObject.layer == LayerMask.NameToLayer("Occlude"))
             {
                 //playerObject.transform.position = raycastHit.point;
-                playerObject.transform.position = new Vector3(raycastHit.point.x - 1, this.transform.position.y, raycastHit.point.z - 1);
+                transform.position = new Vector3(raycastHit.point.x - 1, this.transform.position.y, raycastHit.point.z - 1);
             }
         }
 

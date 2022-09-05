@@ -7,45 +7,26 @@ using UnityEngine.Events;
 
 public class LevelFacade : MonoBehaviour
 {
-    [SerializeField] private GameObject armGameObject;
-
+    [Header("Game Start")]
+    [SerializeField] private GameObject playfieldObject;
     [SerializeField] private float pixelOnBoard;
+    public GameObject paintableArea;
 
-    [SerializeField] private GameObject levelEndObject;
+    [Header("Static Objects")]
+    [SerializeField] private DetectorMovement detectorObject;
+    [SerializeField] CheckpointContainer checkpointContainer;
 
-    public DetectorMovement detectorObject;
-    public CheckpointContainer checkpointContainer;
-    public Action hairFindPosition;
-    
+    private LevelUIController levelUIController;
 
+    [Header("Level End Circumstances")]
     private bool isTraveledDone;
 
+    [Header("Events and Actions")]
+    public Action hairFindPosition;
+
+    #region STATIC ATTRIBUTES
+
     public static LevelFacade Instance;
-    private void Awake()
-    {
-        Instance = this;
-    }
-
-    private void Start()
-    {
-        levelEndObject.SetActive(false);
-        GameStart();
-    }
-
-    public float LevelCompleteThreshold()
-    {
-        return pixelOnBoard *1000;
-    }
-
-    public void CheckLevelComplete(Texture2D texture)
-    {
-        if(CalculatePixelSize(texture)>= LevelCompleteThreshold() && CheckpointTracker(out isTraveledDone))
-        {
-            levelEndObject.SetActive(true);
-            Debug.Log("Level Completed");
-            return;
-        }
-    }
 
     public static int CalculatePixelSize(Texture2D t)
     {
@@ -75,15 +56,39 @@ public class LevelFacade : MonoBehaviour
         return tran;
     }
 
-    public void RestartLevel()
+    #endregion
+
+    private void Awake()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        Instance = this;
     }
 
-    public DetectorMovement DetectorObject()
-    {
-        return detectorObject;
+    private void Start()
+    { 
+        levelUIController = LevelUIController.Instance;
+        GameStart();
     }
+
+    #region PUBLIC ATTRIBUTES
+
+    public void CheckLevelComplete(Texture2D texture)
+    {
+        if(CalculatePixelSize(texture)>= LevelCompleteThreshold() && CheckpointTracker(out isTraveledDone))
+        {
+            detectorObject.gameObject.SetActive(false);
+            levelUIController.PullButtonActivation(true);
+            return;
+        }
+    }
+
+    public float LevelCompleteThreshold()
+    {
+        return pixelOnBoard *1000;
+    }
+
+    #endregion
+
+    #region PRIVATES ATTRIBUTES
 
     private bool CheckpointTracker(out bool isTraveledDone)
     {
@@ -101,10 +106,27 @@ public class LevelFacade : MonoBehaviour
     {
         detectorObject.gameObject.SetActive(false);
 
-        armGameObject.transform.DOMoveX(0, 3f).OnComplete(() =>
+        playfieldObject.transform.DOMoveX(0, 3f).OnComplete(() =>
         {
             detectorObject.gameObject.SetActive(true);
             hairFindPosition?.Invoke();
         });
     }
+
+    #endregion
+
+    #region GETTERS
+
+    public DetectorMovement GetDetectorObject()
+    {
+        return detectorObject;
+    }
+
+    public CheckpointContainer GetCheckPointContainer()
+    {
+        return checkpointContainer;
+    }
+
+    #endregion
+
 }
